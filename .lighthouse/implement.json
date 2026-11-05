@@ -22,7 +22,7 @@
         "package.json",
         "package-lock.json",
         "src/summary.test.mjs",
-        "src/format-summary.test.mjs",
+        "src/",
         "scripts/consumer-preflight.mjs",
         ".github/workflows/ci.yml",
         ".lighthouse/github.json",
@@ -33,7 +33,9 @@
       ],
       "corrections": {
         "src/summary.test.mjs": "Update expected result objects to include the explicitly requested failed and unavailable counts. Retain the existing empty-inventory and unknown-never-passes behavioral coverage; add meaningful mixed-status boundaries without removing or weakening those checks.",
-        "src/format-summary.test.mjs": "Create meaningful coverage for the requested summary formatting outcome; do not weaken existing checks."
+        "src/format-summary.test.mjs": "Create meaningful coverage for the requested summary formatting outcome; do not weaken existing checks.",
+        "src/summary.mjs": "Implement only the authorized four-count summary semantics in slice A; keep the source unchanged during host verification.",
+        "src/format-summary.mjs": "Implement only the authorized pure formatter in slice B after its accepted dependency; keep the source unchanged during host verification."
       }
     }
   }
