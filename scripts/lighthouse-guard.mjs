@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 
 const mode = process.argv[2];
-const branchPattern = new RegExp("^(feat|fix|docs|refactor|test|chore|build|ci|perf|revert)/[1-9]\\d*-[a-z0-9]+(?:-[a-z0-9]+)*$", 'u');
+const branchPattern = new RegExp("^(?:(feat|fix|docs|refactor|test|chore|build|ci|perf|revert)/[1-9]\\d*-[a-z0-9]+(?:-[a-z0-9]+)*|(?:codex|lighthouse)/[a-z0-9][a-z0-9/-]*)$", 'u');
 function fail(message) { console.error(message); process.exit(1); }
 function branch() {
   try { return execFileSync('git', ['branch', '--show-current'], { encoding: 'utf8' }).trim(); }

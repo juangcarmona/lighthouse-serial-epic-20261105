@@ -34,14 +34,14 @@
     "harness": "1",
     "sdlc": "1"
   },
-  "lastAppliedMigration": "foundation-init-1",
+  "lastAppliedMigration": "upgrade-0.12.38",
   "files": {
     "LIGHTHOUSE.md": {
-      "hash": "c7e66fadc2011922d8535efcdc7476e08141918c547de0f3642a677913840011",
+      "hash": "4d4a7e12a6b33b3c421b4e8bb057f924d1f33212ed18d14db228f1f666ab1007",
       "scope": "harness"
     },
     "scripts/lighthouse-guard.mjs": {
-      "hash": "08b66ddaaecab2fd5704b41f30a0bf4a5767dcb92cde30e74820b6e302cbc445",
+      "hash": "53dbc37c72f79669ee52ffbe98d6ab15f79134825bb88ded69753fc2cc865191",
       "scope": "harness"
     },
     ".husky/commit-msg": {
