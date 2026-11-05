@@ -2,8 +2,7 @@
   "defaults": {
     "scope": "Implement only the authenticated consumer issue or native epic slice and its acceptance criteria. Preserve provider scaffolds, guidance, hooks and check configuration; OpenSpec changes belong only to this issue.",
     "paths": [
-      "src/",
-      "openspec/changes/"
+      "src/"
     ],
     "checks": [
       [
