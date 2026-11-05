@@ -32,7 +32,7 @@
         "scripts/verify-delivery-profile.mjs"
       ],
       "corrections": {
-        "src/summary.test.mjs": "Add meaningful coverage for the specifically requested summary outcome; preserve existing assertions.",
+        "src/summary.test.mjs": "Update expected result objects to include the explicitly requested failed and unavailable counts. Retain the existing empty-inventory and unknown-never-passes behavioral coverage; add meaningful mixed-status boundaries without removing or weakening those checks.",
         "src/format-summary.test.mjs": "Create meaningful coverage for the requested summary formatting outcome; do not weaken existing checks."
       }
     }
