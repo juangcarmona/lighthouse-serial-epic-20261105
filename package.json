@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@juangcarmona/lighthouse": "0.12.38"
+  },
+  "name": "serial-epic-qualification",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test src/*.test.mjs",
+    "verify": "node scripts/consumer-preflight.mjs && node scripts/verify-delivery-profile.mjs && npm test"
+  }
+}

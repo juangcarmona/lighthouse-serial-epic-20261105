@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "profileVersion": 1,
+  "repository": "juangcarmona/lighthouse-serial-epic-20261105",
+  "intake": "collaborators",
+  "requiredChecks": [
+    {
+      "context": "repository",
+      "integrationId": 15368
+    }
+  ],
+  "requiredApprovals": 0,
+  "evidenceBranch": "process/retrospectives",
+  "releaseWorkflowReady": false,
+  "completion": {
+    "publishEvidence": true,
+    "postMergeWorkflows": [
+      "ci.yml"
+    ],
+    "protectionObservations": [
+      {
+        "id": 26578687,
+        "revision": "0fe51cd87a576b19882aed89936f0248b00cb29173eafdd399e2eec71f65c992"
+      }
+    ]
+  }
+}
