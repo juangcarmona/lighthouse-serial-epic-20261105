@@ -4,7 +4,7 @@
 
 See proposal.md for motivation. The current checkout exports `summarize(checks)` with four numeric counts and maps unknown statuses to unavailable. The repository uses ESM and Node's built-in test runner. The host supplies the source revision; this worker does not independently authenticate GitHub authority or acceptance.
 
-Issue #21 requires authenticated A acceptance and current-history inclusion before implementation. The supplied context has `predecessor: null` and no acceptance/inclusion receipt. Slice A's task list also leaves those receipts as follow-up. This is an operational prerequisite, not an unresolved product decision; no formatter code is delivered until the host supplies it.
+Issue #21 requires authenticated A acceptance and current-history inclusion before implementation. The correction context supplies host provenance for PR #22, acceptance workflow `42140729235` and squash commit `a5541fe979bda3439e0eaa2521d34ed27a0a38ee` as the epic base. The host must authenticate and revalidate these facts; this worker does not substitute local checks or historical planning checkboxes for those receipts.
 
 ## Goals / Non-Goals
 
@@ -20,7 +20,7 @@ Issue #21 requires authenticated A acceptance and current-history inclusion befo
 
 ## Risks / Trade-offs
 
-- [Missing prerequisite authority] → Stop before formatter implementation and request authenticated receipts from the delivery host.
+- [Stale prerequisite authority] → The trusted host revalidates supplied A acceptance and inclusion provenance before execution and publication.
 - [Exact-string drift] → Assert punctuation, spacing and zero-count text, including singular totals without pluralization.
 - [Local checks mistaken for delivery acceptance] → Retain local receipts separately from later clean-candidate checks, native CI, B current-head acceptance and merge receipts.
 

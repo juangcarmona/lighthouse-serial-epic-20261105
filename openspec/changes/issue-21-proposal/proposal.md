@@ -9,7 +9,7 @@ Consumers need a stable delivery-text representation of the four-count summary s
 - Add a pure `formatSummary(summary)` export with the exact total, passed, failed and unavailable wording requested in issue #21.
 - Add tests composing the real summarizer and formatter for empty and mixed inventories, plus distinct-count and immutable-input boundaries.
 - Do not change the summarizer, dependencies, provider scaffolds or delivery configuration.
-- Implementation remains gated on authenticated slice A acceptance and current epic-history inclusion. The supplied context has neither receipt; source presence alone is insufficient.
+- Implementation requires authenticated slice A acceptance and current epic-history inclusion. The correction context supplies host provenance for accepted PR #22 and squash commit `a5541fe979bda3439e0eaa2521d34ed27a0a38ee`; authentication and revalidation remain the trusted host's responsibility.
 
 ## Capabilities
 
@@ -23,4 +23,4 @@ None. `openspec list --specs` returned no archived specifications. Slice A's pen
 
 ## Impact
 
-Planned code is limited to `src/format-summary.mjs` and `src/format-summary.test.mjs`. The API consumes the existing numeric `total`, `passed`, `failed` and `unavailable` properties. No I/O, dependency changes or migration are needed. This blocked candidate contains planning artifacts only.
+Code is limited to `src/format-summary.mjs` and `src/format-summary.test.mjs`. The API consumes the existing numeric `total`, `passed`, `failed` and `unavailable` properties. No I/O, dependency changes or migration are needed.
