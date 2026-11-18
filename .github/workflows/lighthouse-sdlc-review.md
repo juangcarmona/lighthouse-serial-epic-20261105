@@ -22,11 +22,12 @@ on:
         required: true
         type: string
   needs: [prepare]
-if: needs.prepare.outputs.eligible == 'true'
+if: github.run_attempt == 1 && needs.prepare.outputs.eligible == 'true'
 runs-on: [self-hosted, linux, lighthouse-workflow]
 runs-on-slim: ubuntu-24.04
 timeout-minutes: 15
 env:
+  LIGHTHOUSE_MAINTENANCE_ENABLED: ${{ vars.LIGHTHOUSE_MAINTENANCE_ENABLED }}
   LIGHTHOUSE_RECOVERY_ENABLED: ${{ vars.LIGHTHOUSE_RECOVERY_ENABLED }}
   LIGHTHOUSE_MAINTENANCE_ISSUES: ${{ vars.LIGHTHOUSE_MAINTENANCE_ISSUES }}
   LIGHTHOUSE_STAGE: review
@@ -52,6 +53,7 @@ safe-outputs:
   report-incomplete: false
   threat-detection: false
   report-failure-as-issue: false
+  report-failed-jobs: false
   report-missing-tool: false
   report-missing-data: false
   noop:
@@ -68,7 +70,7 @@ steps:
     uses: actions/checkout@v5
     with:
       repository: juangcarmona/lighthouse
-      ref: 9b11266f965013d55e733a3e06b7a5a32b842074
+      ref: db3c062f4df3774cd98c16333e4bb5c8f7958a9c
       path: .lighthouse-harness
       persist-credentials: false
   - name: Load the authorized issue context
@@ -100,13 +102,14 @@ post-steps:
       retention-days: 14
 jobs:
   prepare:
+    if: github.run_attempt == 1
     outputs:
       eligible: ${{ steps.prepare.outputs.eligible }}
       revision: ${{ steps.prepare.outputs.revision }}
     name: Verify accepted commit, checks and evidence protection
     runs-on: ubuntu-24.04
     permissions:
-      actions: read
+      actions: write
       checks: read
       contents: read
       pull-requests: read
@@ -117,7 +120,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           repository: juangcarmona/lighthouse
-          ref: 9b11266f965013d55e733a3e06b7a5a32b842074
+          ref: db3c062f4df3774cd98c16333e4bb5c8f7958a9c
           persist-credentials: false
       - uses: actions/setup-node@v5
         with:
@@ -141,6 +144,19 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           LIGHTHOUSE_PREPARE_FAILED: "true"
         run: node src/packages/sdlc/src/completion-actions.mjs cleanup
+      - name: Wake authenticated admission recovery
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node src/packages/sdlc/src/completion-actions.mjs signal-admission-rejection
+      - name: Preserve admission wake receipt
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-admission-signal-${{ inputs.issue }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/lighthouse-${{ github.run_id }}-${{ github.run_attempt }}/admission-signal.json
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Observe workflow telemetry
         if: always()
         continue-on-error: true
@@ -165,7 +181,7 @@ jobs:
       cancel-in-progress: false
     name: Validate, publish and release
     needs: [prepare, agent]
-    if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.eligible == 'true'
+    if: always() && github.run_attempt == 1 && needs.prepare.result == 'success' && needs.prepare.outputs.eligible == 'true'
     runs-on: ubuntu-24.04
     permissions:
       actions: write
@@ -179,7 +195,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           repository: juangcarmona/lighthouse
-          ref: 9b11266f965013d55e733a3e06b7a5a32b842074
+          ref: db3c062f4df3774cd98c16333e4bb5c8f7958a9c
           persist-credentials: false
       - uses: actions/setup-node@v5
         with:

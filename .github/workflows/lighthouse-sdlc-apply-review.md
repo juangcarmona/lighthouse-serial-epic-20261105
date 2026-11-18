@@ -26,10 +26,10 @@ on:
         required: false
         type: string
   needs: [prepare]
-if: needs.prepare.outputs.eligible == 'true'
+if: github.run_attempt == 1 && needs.prepare.outputs.eligible == 'true'
 runs-on: [self-hosted, linux, lighthouse-workflow]
 runs-on-slim: ubuntu-24.04
-timeout-minutes: 55
+timeout-minutes: 150
 env:
   LIGHTHOUSE_RECOVERY_ENABLED: ${{ vars.LIGHTHOUSE_RECOVERY_ENABLED }}
   LIGHTHOUSE_MAINTENANCE_ISSUES: ${{ vars.LIGHTHOUSE_MAINTENANCE_ISSUES }}
@@ -57,6 +57,7 @@ safe-outputs:
   report-incomplete: false
   threat-detection: false
   report-failure-as-issue: false
+  report-failed-jobs: false
   report-missing-tool: false
   report-missing-data: false
   noop:
@@ -74,7 +75,7 @@ steps:
     uses: actions/checkout@v5
     with:
       repository: juangcarmona/lighthouse
-      ref: 9b11266f965013d55e733a3e06b7a5a32b842074
+      ref: db3c062f4df3774cd98c16333e4bb5c8f7958a9c
       path: .lighthouse-harness
       persist-credentials: false
   - name: Load the authorized issue context
@@ -93,6 +94,7 @@ post-steps:
       path: |
         ${{ runner.temp }}/lighthouse-${{ github.run_id }}-${{ github.run_attempt }}/envelope.json
         ${{ runner.temp }}/lighthouse-${{ github.run_id }}-${{ github.run_attempt }}/runtime.json
+        ${{ runner.temp }}/lighthouse-${{ github.run_id }}-${{ github.run_attempt }}/visual-evidence.json
         ${{ runner.temp }}/lighthouse-${{ github.run_id }}-${{ github.run_attempt }}/engine-error.json
         ${{ runner.temp }}/lighthouse-${{ github.run_id }}-${{ github.run_attempt }}/changes.json
         ${{ runner.temp }}/lighthouse-${{ github.run_id }}-${{ github.run_attempt }}/checks.json
@@ -106,6 +108,14 @@ post-steps:
       path: ${{ runner.temp }}/lighthouse-${{ github.run_id }}-${{ github.run_attempt }}/evidence/
       if-no-files-found: ignore
       retention-days: 30
+  - name: Preserve visual captures separately from bounded JSON results
+    if: always()
+    uses: actions/upload-artifact@v7
+    with:
+      name: lighthouse-visual-${{ inputs.issue }}-${{ github.run_attempt }}
+      path: ${{ runner.temp }}/lighthouse-${{ github.run_id }}-${{ github.run_attempt }}/evidence/visual/*.png
+      if-no-files-found: ignore
+      retention-days: 30
   - name: Preserve OpenCode diagnostic events
     if: always()
     uses: actions/upload-artifact@v7
@@ -115,7 +125,11 @@ post-steps:
       if-no-files-found: ignore
       retention-days: 14
 jobs:
+  agent:
+    # Cover the bounded host admission hook, engine slot wait and execution step.
+    timeout-minutes: 360
   prepare:
+    if: github.run_attempt == 1
     concurrency:
       group: ${{ inputs.epic-parent && format('lighthouse-issue-{0}', inputs.epic-parent) || format('lighthouse-prepare-{0}', github.run_id) }}
       cancel-in-progress: false
@@ -138,7 +152,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           repository: juangcarmona/lighthouse
-          ref: 9b11266f965013d55e733a3e06b7a5a32b842074
+          ref: db3c062f4df3774cd98c16333e4bb5c8f7958a9c
           persist-credentials: false
       - uses: actions/setup-node@v5
         with:
@@ -187,7 +201,7 @@ jobs:
       queue: max
     name: Validate, publish and release
     needs: [prepare, agent]
-    if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.eligible == 'true'
+    if: always() && github.run_attempt == 1 && needs.prepare.result == 'success' && needs.prepare.outputs.eligible == 'true'
     runs-on: ubuntu-24.04
     permissions:
       actions: write
@@ -200,7 +214,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           repository: juangcarmona/lighthouse
-          ref: 9b11266f965013d55e733a3e06b7a5a32b842074
+          ref: db3c062f4df3774cd98c16333e4bb5c8f7958a9c
           persist-credentials: false
       - uses: actions/setup-node@v5
         with:
@@ -216,6 +230,16 @@ jobs:
         with:
           name: lighthouse-${{ needs.prepare.outputs.artifact_prefix }}result-${{ inputs.issue }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/lighthouse-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Inspect the retained visual assessment
+        id: visual
+        if: needs.agent.result == 'success'
+        run: node src/packages/sdlc/src/issue-actions.mjs visual-artifact
+      - name: Load the retained visual captures
+        if: needs.agent.result == 'success' && steps.visual.outputs.visual == 'true'
+        uses: actions/download-artifact@v8
+        with:
+          name: lighthouse-visual-${{ inputs.issue }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/lighthouse-${{ github.run_id }}-${{ github.run_attempt }}/evidence/visual
       - name: Require an executed agent
         if: needs.agent.result != 'success'
         run: |

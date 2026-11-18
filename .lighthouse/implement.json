@@ -38,5 +38,56 @@
         "src/format-summary.mjs": "Implement only the authorized pure formatter in slice B after its accepted dependency; keep the source unchanged during host verification."
       }
     }
+  },
+  "28": {
+    "scope": "Deliver only issue #28: append its one test and complete its own OpenSpec plan. Preserve all existing test bytes, production modules, accepted models, prior plans, provider scaffolds, tools, hooks, dependencies, workflow and check policies. The host owns OpenSpec metadata. No ProductShape apply, protected acceptance or merge is authorized to the worker.",
+    "paths": [
+      "src/summary.test.mjs",
+      "openspec/changes/issue-28-proposal/"
+    ],
+    "checks": [
+      [
+        "npm",
+        "ci",
+        "--ignore-scripts"
+      ],
+      [
+        "npm",
+        "run",
+        "verify"
+      ],
+      [
+        "npx",
+        "--no-install",
+        "lighthouse",
+        "verify"
+      ],
+      [
+        "node",
+        "scripts/lighthouse-guard.mjs",
+        "verify"
+      ]
+    ],
+    "reviewRequired": false,
+    "verification": {
+      "paths": [
+        "package.json",
+        "package-lock.json",
+        "src/summary.test.mjs",
+        "src/",
+        "scripts/consumer-preflight.mjs",
+        ".github/workflows/ci.yml",
+        ".lighthouse/github.json",
+        ".lighthouse/implement.json",
+        "docs/consumer-contract.md",
+        "tools/existing-tool.mjs",
+        "scripts/verify-delivery-profile.mjs",
+        "src/summary.mjs",
+        "src/format-summary.mjs"
+      ],
+      "corrections": {
+        "src/summary.test.mjs": "Append only the inherited non-enumerable primitive-status test required by issue #28. Preserve every existing byte as a prefix and all original assertions; do not alter production modules."
+      }
+    }
   }
 }
