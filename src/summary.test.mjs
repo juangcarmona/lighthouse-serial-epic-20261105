@@ -50,3 +50,23 @@ test("does not mutate inputs or share results between calls", () => {
   assert.deepEqual(summarize(checks), { total: 3, passed: 1, failed: 1, unavailable: 1 });
   assert.deepEqual(summarize([]), { total: 0, passed: 0, failed: 0, unavailable: 0 });
 });
+
+
+test("counts frozen own non-enumerable primitive statuses without changing descriptors", () => {
+  const observations = ["passed", "failed", "unknown"].map(status =>
+    Object.freeze(Object.defineProperty({}, "status", { value: status }))
+  );
+  const inventory = Object.freeze([...observations]);
+  const descriptors = observations.map(item => Object.getOwnPropertyDescriptor(item, "status"));
+  assert.deepEqual(summarize(inventory), { total: 3, passed: 1, failed: 1, unavailable: 1 });
+  for (let index = 0; index < observations.length; index += 1) {
+    assert.equal(inventory[index], observations[index]);
+    assert.equal(Object.hasOwn(observations[index], "status"), true);
+    assert.deepEqual(Object.getOwnPropertyDescriptor(observations[index], "status"), descriptors[index]);
+    assert.equal(descriptors[index].enumerable, false);
+    assert.equal(descriptors[index].writable, false);
+    assert.equal(descriptors[index].configurable, false);
+    assert.equal(Object.isFrozen(observations[index]), true);
+  }
+  assert.equal(Object.isFrozen(inventory), true);
+});
