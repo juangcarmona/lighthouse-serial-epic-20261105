@@ -1,3 +1,8 @@
+---
+pdac-scope: none
+pdac-scope-reason: "Historical engineering qualification for this owner-operated technical fixture; its canonical ProductShape model is empty and this document makes no product-model approval claim."
+---
+
 # Design
 
 ## Context

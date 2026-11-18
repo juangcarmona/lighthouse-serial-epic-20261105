@@ -9,6 +9,9 @@
   "type": "module",
   "scripts": {
     "test": "node --test src/*.test.mjs",
-    "verify": "node scripts/consumer-preflight.mjs && node scripts/verify-delivery-profile.mjs && npm test"
+    "verify": "node scripts/consumer-preflight.mjs && node scripts/verify-delivery-profile.mjs && npm test && prodshape citations verify --provider openspec"
+  },
+  "devDependencies": {
+    "@fission-ai/openspec": "1.15.0"
   }
 }
