@@ -5,16 +5,17 @@
 - Baseline: `0.1.0`
 - Product: `Serial epic qualification`
 - Profiles: none
-- SDLC package: `@juangcarmona/lighthouse-sdlc@0.20.5`
-- ProductShape: not adopted
-- ArcShape: not adopted
+- SDLC package: `@juangcarmona/lighthouse-sdlc@0.30.1`
+- ProductShape: 0.26.1
+- Required PDaC serialization: `v1alpha2`
+- ArcShape: 0.4.0
 - Public site: `enabled`
 - Repository roots: `src/`, `docs/`, `infra/`, `scripts/`
 - Commit convention: `conventional`
 
 ## Delivery contract
 
-ProductShape is not adopted; follow the repository-owned product intent and decision records. ArcShape is not adopted; follow the repository-owned architecture guidance. Lighthouse installs the repository baseline and verifies the selected integrations.
+ProductShape is the adopted authority for product intent and Product Changes; PDaC v1alpha2 is required. ArcShape is the adopted authority for architecture documentation and decisions. Lighthouse installs the repository baseline and verifies the selected integrations.
 
 The repository keeps source code in `src/`, documentation in `docs/`, infrastructure in `infra/` and repository automation in `scripts/`. A project may record a narrow, owned exception, but an initializer never overwrites an existing project file.
 
@@ -22,7 +23,7 @@ The selected SDLC package owns lifecycle skills, commands, meta-commands, routes
 
 For delivery, labels or GitHub workflows, read [the installed SDLC delivery guide](node_modules/@juangcarmona/lighthouse-sdlc/README.md) first. Confirm the installed package version, workflow source pin and current branch before describing deployed behavior.
 
-The Lighthouse documentation site is enabled but unavailable until both authorities are adopted and validate successfully. This route publishes product and architecture documentation. Application deployment follows the repository's own delivery policy.
+The Lighthouse documentation site is enabled; publication requires successful ProductShape and ArcShape validation. This route publishes product and architecture documentation. Application deployment follows the repository's own delivery policy.
 
 ## User identity
 
