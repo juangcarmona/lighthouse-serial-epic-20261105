@@ -1,7 +1,8 @@
 {
   "dependencies": {
-    "@juangcarmona/lighthouse": "0.12.38",
-    "@juangcarmona/lighthouse-sdlc": "0.30.1"
+    "@juangcarmona/lighthouse": "0.13.27",
+    "@juangcarmona/lighthouse-sdlc": "0.30.1",
+    "@prodshape/cli": "0.26.1"
   },
   "name": "serial-epic-qualification",
   "private": true,
